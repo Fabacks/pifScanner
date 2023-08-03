@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pifScanner"
-        mc:Ignorable="d" Height="600" Width="800" Icon="/logo.png" Title="pifScanner">
+        mc:Ignorable="d" Height="600" Width="800" Icon="/Assets/logo.png" Title="pifScanner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
