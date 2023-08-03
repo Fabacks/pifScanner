@@ -28,7 +28,7 @@ Contributions are welcome! If you have an idea for an improvement or if you've f
 
 ---
 
-# pifScanner
+# pifScanner (French Version)
 
 `pifScanner` est une application de bureau simple et efficace pour scanner votre réseau local et lister tous les appareils connectés. L'application est construite sur WPF et .NET, et est conçue pour être facilement extensible.
 
@@ -54,3 +54,13 @@ Les contributions sont les bienvenues ! Si vous avez une idée d'amélioration o
 ## Licence
 
 `pifScanner` est sous licence Creative Commons Attribution Non-Commercial (CC BY-NC). Pour plus d'informations, veuillez consulter le fichier [LICENSE](LICENSE) dans ce dépôt.
+
+
+---
+# Contributors
+
+<a href="https://github.com/Fabacks/pifScanner/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Fabacks/pifScanner" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
