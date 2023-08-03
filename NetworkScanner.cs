@@ -37,58 +37,41 @@ namespace pifScanner
 
         private void getIpAddress(string ip, Action<NetworkDevice> onDeviceFound, CancellationToken ct)
         {
-            // Throw if cancellation is requested
-            ct.ThrowIfCancellationRequested();
-
             using (var ping = new Ping())
             {
-                var reply = ping.SendPingAsync(ip, 1000).GetAwaiter().GetResult();
-
                 // Throw if cancellation is requested
                 ct.ThrowIfCancellationRequested();
+                
+                var reply = ping.SendPingAsync(ip, 3000).GetAwaiter().GetResult();
+                if (reply.Status != IPStatus.Success)
+                    return;
 
-                if (reply.Status == IPStatus.Success)
+                string hostName = "Unknown";
+                try
                 {
-                    string hostName = "Unknown";
-                    try
-                    {
-                        var hostEntry = Dns.GetHostEntryAsync(ip).GetAwaiter().GetResult();
-                        hostName = hostEntry.HostName;
-                    }
-                    catch (SocketException)
-                    {
-                        // L'hôte est inconnu, continuez l'analyse.
-                    }
-
-                    var macAddress = GetMacAddress(ip);
-
-                    var device = new NetworkDevice
-                    {
-                        Ip = ip,
-                        Hostname = hostName,
-                        MacAddress = macAddress,
-                        ResponseTime = reply.RoundtripTime.ToString()
-                    };
-
-                    // Appelle l'action fournie pour chaque appareil trouvé
-                    onDeviceFound?.Invoke(device);
+                    var hostEntry = Dns.GetHostEntryAsync(ip).GetAwaiter().GetResult();
+                    hostName = hostEntry.HostName;
                 }
+                catch (SocketException)
+                {
+                    // L'hôte est inconnu, continuez l'analyse.
+                }
+
+                var device = new NetworkDevice
+                {
+                    Ip = ip,
+                    Hostname = hostName,
+                    MacAddress = GetMacAddress(ip),
+                    ResponseTime = reply.RoundtripTime.ToString()
+                };
+
+                // Appelle l'action fournie pour chaque appareil trouvé
+                onDeviceFound?.Invoke(device);
             }
         }
 
         private string GetMacAddress(string ipAddress)
         {
-            // Ping the IP to force refresh the ARP table
-            using (var ping = new Ping())
-            {
-                var reply = ping.Send(ipAddress);
-
-                if (reply.Status != IPStatus.Success)
-                {
-                    return "MAC Not Found";
-                }
-            }
-
             var arpRequest = new ProcessStartInfo
             {
                 FileName = "arp",
@@ -106,12 +89,16 @@ namespace pifScanner
             var lines = output.Split('\n');
             foreach (var line in lines)
             {
-                if (line.Contains(ipAddress))
+                if ( !line.Contains(ipAddress) )
+                    continue;
+
+                var parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var part in parts)
                 {
-                    var parts = line.Split(' ', (char)StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length >= 2)
+                    // Check if part is a MAC address
+                    if (System.Text.RegularExpressions.Regex.IsMatch(part, @"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})"))
                     {
-                        return parts[1];
+                        return part;
                     }
                 }
             }

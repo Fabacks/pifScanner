@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,10 @@ namespace pifScanner
         
         // Event d'anulation du bouton rechercher
         private CancellationTokenSource cts;
-        
+
+        // Time search
+        private Stopwatch searchTime = new Stopwatch();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +44,9 @@ namespace pifScanner
                 devices.Add(device);
 
                 dataGridDevice.Items.Refresh();
+
+                // Update device count
+                lblDeviceCount.Content = $"Device Count: {devices.Count}";
             });
         }
 
@@ -49,7 +56,7 @@ namespace pifScanner
             Application.Current.Shutdown();
         }
 
-            private void btnSearch_Click(object sender, RoutedEventArgs e)
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             if (cts != null)
             {
@@ -57,19 +64,24 @@ namespace pifScanner
                 cts.Cancel();
                 cts = null;
 
-                btnSearch.Content = "Lancer le scan";
+                btnSearch.Content = "Lunch scan";
 
                 return;
             }
+
+            // Start search time stopwatch
+            searchTime.Reset();
+            searchTime.Start();
 
             // Create a new cancellation token source
             cts = new CancellationTokenSource();
 
             // Change the button text to "Stop Scan"
-            btnSearch.Content = "Arrêter le scan";
+            btnSearch.Content = "Stop scan";
 
-            // Clear the previous scan results
+            // Reset device list
             devices.Clear();
+            lblDeviceCount.Content = "Device Count: 0";
 
             // Refresh the DataGrid
             dataGridDevice.Items.Refresh();
@@ -94,7 +106,11 @@ namespace pifScanner
                     // After scan is completed or canceled, revert the button text back to "Start Scan" on the main UI thread.
                     Dispatcher.Invoke(() =>
                     {
-                        btnSearch.Content = "Lancer le scan";
+                        btnSearch.Content = "Lunch scan";
+
+                        // Stop search time stopwatch and update label
+                        searchTime.Stop();
+                        lblSearchTime.Content = $"Search Time: {searchTime.Elapsed.TotalSeconds}s";
                     });
                 }
             });

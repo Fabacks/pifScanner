@@ -4,30 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pifScanner"
-        mc:Ignorable="d"
-        Title="pifScanner" Height="600" Width="800">
+        mc:Ignorable="d" Height="600" Width="800" Icon="/logo.png" Title="pifScanner">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Menu>
-            <MenuItem Header="Fichier">
-                <MenuItem Header="Quitter" Click="MenuQuit_Click" />
-            </MenuItem> 
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,38" Grid.RowSpan="2">
+            <MenuItem Header="File">
+                <MenuItem Header="Quit" Click="MenuQuit_Click" />
+            </MenuItem>
         </Menu>
-        
-        <StackPanel Orientation="Horizontal" Margin="20">
-            <Label Content="IP de départ :" VerticalAlignment="Center"/>
+
+        <StackPanel Orientation="Horizontal" Margin="10,27,10,0">
+            <Label Content="IP start :" VerticalAlignment="Center"/>
             <TextBox x:Name="txtIpStart" Margin="5" Width="120"/>
 
-            <Label Content="IP de fin :" VerticalAlignment="Center" Margin="10,0"/>
+            <Label Content="IP end :" VerticalAlignment="Center" Margin="10,0"/>
             <TextBox x:Name="txtIpEnd" Margin="5" Width="120"/>
 
-            <Button x:Name="btnSearch" Content="Lancer le scan" Margin="10,0" VerticalAlignment="Center" Click="btnSearch_Click"/>
+            <Button x:Name="btnSearch" Content="Lunch scan" Margin="10,0" VerticalAlignment="Center" Click="btnSearch_Click"
+                Background="#4CAF50" Foreground="White" Padding="10,2" 
+                BorderThickness="1" BorderBrush="#4CAF50" FontSize="14" Width="100" Height="30" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
         </StackPanel>
 
-        <DataGrid x:Name="dataGridDevice" Grid.Row="1" Margin="10" AutoGenerateColumns="True"/>
+        <StackPanel Orientation="Horizontal" Margin="10,0,10,5" Grid.Row="2" >
+            <Label x:Name="lblDeviceCount" Content="Device Count: 0" VerticalAlignment="Center" Margin="0,0,22,0" />
+            <Label x:Name="lblSearchTime" Content="Search Time: 0s" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <DataGrid x:Name="dataGridDevice" Grid.Row="3" Margin="10" AutoGenerateColumns="True"/>
     </Grid>
 </Window>

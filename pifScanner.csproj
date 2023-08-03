@@ -11,6 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="language\fr-FR.Designer.cs">
       <DependentUpon>fr-FR.resx</DependentUpon>
       <DesignTime>True</DesignTime>
